@@ -26,8 +26,11 @@ class AttendanceController extends Controller
 
         // Filter by date range on the attendance record itself
         if ($request->has('start_date') && $request->has('end_date')) {
-            // Assuming start_date and end_date are in 'Y-m-d' format
-            $query->whereBetween('recorded_at', [$request->start_date . ' 00:00:00', $request->end_date . ' 23:59:59']);
+            // Parse dates in the application timezone (Asia/Jakarta)
+            $startDate = \Carbon\Carbon::createFromFormat('Y-m-d', $request->start_date)->startOfDay();
+            $endDate = \Carbon\Carbon::createFromFormat('Y-m-d', $request->end_date)->endOfDay();
+            
+            $query->whereBetween('recorded_at', [$startDate, $endDate]);
         }
 
         // Filter by class, via the schedule relationship
@@ -75,13 +78,22 @@ class AttendanceController extends Controller
 
         // Send Telegram Notification
         if ($attendance->student && $attendance->student->parent_telegram_id) {
+            $startTime = \Carbon\Carbon::parse($attendance->schedule->start_time)->format('H:i');
+            $endTime = \Carbon\Carbon::parse($attendance->schedule->end_time)->format('H:i');
+            $scheduleTime = "{$startTime} - {$endTime}";
+            
+            // Use current server time (Jakarta) for the notification date
+            // This ensures the date matches the actual day the attendance was marked
+            $date = \Carbon\Carbon::now()->locale('id')->translatedFormat('l, d F Y');
+
             $this->telegramService->sendNotification(
                 $attendance->student->parent_telegram_id,
                 $attendance->student->name,
                 $attendance->schedule->classGroup->name ?? '-',
                 $attendance->schedule->subject->name ?? '-',
                 $attendance->status,
-                $attendance->recorded_at
+                $scheduleTime,
+                $date
             );
         }
 
@@ -119,13 +131,21 @@ class AttendanceController extends Controller
 
         // Send Telegram Notification (Optional: You might want to limit this to status changes only)
         if ($attendance->student && $attendance->student->parent_telegram_id) {
+            $startTime = \Carbon\Carbon::parse($attendance->schedule->start_time)->format('H:i');
+            $endTime = \Carbon\Carbon::parse($attendance->schedule->end_time)->format('H:i');
+            $scheduleTime = "{$startTime} - {$endTime}";
+            
+            // Use current server time (Jakarta) for the notification date
+            $date = \Carbon\Carbon::now()->locale('id')->translatedFormat('l, d F Y');
+
             $this->telegramService->sendNotification(
                 $attendance->student->parent_telegram_id,
                 $attendance->student->name,
                 $attendance->schedule->classGroup->name ?? '-',
                 $attendance->schedule->subject->name ?? '-',
                 $attendance->status,
-                $attendance->recorded_at
+                $scheduleTime,
+                $date
             );
         }
 

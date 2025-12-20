@@ -11,28 +11,41 @@ class ScheduleController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
+        $perPage = $request->input('per_page', 10);
+        
         $schedules = Schedule::with(['subject', 'teacher', 'classGroup'])
-            ->get()
-            ->map(function ($schedule) {
-                return [
-                    'id' => $schedule->id,
-                    'subject_id' => $schedule->subject_id,
-                    'subject_name' => $schedule->subject->name ?? '',
-                    'teacher_id' => $schedule->teacher_id,
-                    'teacher_name' => $schedule->teacher->name ?? '',
-                    'class_group_id' => $schedule->class_group_id,
-                    'day_of_week' => $schedule->day_of_week,
-                    'start_time' => $schedule->start_time,
-                    'end_time' => $schedule->end_time,
-                    'room' => $schedule->room,
-                    'is_active' => $schedule->is_active,
-                ];
-            });
+            ->orderBy('day_of_week')
+            ->orderBy('start_time')
+            ->paginate($perPage);
+
+        $data = $schedules->map(function ($schedule) {
+            return [
+                'id' => $schedule->id,
+                'subject_id' => $schedule->subject_id,
+                'subject_name' => $schedule->subject->name ?? '',
+                'teacher_id' => $schedule->teacher_id,
+                'teacher_name' => $schedule->teacher->name ?? '',
+                'class_group_id' => $schedule->class_group_id,
+                'day_of_week' => $schedule->day_of_week,
+                'start_time' => $schedule->start_time,
+                'end_time' => $schedule->end_time,
+                'room' => $schedule->room,
+                'is_active' => $schedule->is_active,
+            ];
+        });
 
         return response()->json([
-            'data' => $schedules,
+            'data' => $data,
+            'meta' => [
+                'current_page' => $schedules->currentPage(),
+                'last_page' => $schedules->lastPage(),
+                'per_page' => $schedules->perPage(),
+                'total' => $schedules->total(),
+                'from' => $schedules->firstItem(),
+                'to' => $schedules->lastItem(),
+            ],
         ], 200);
     }
 

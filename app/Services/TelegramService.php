@@ -35,13 +35,13 @@ class TelegramService
         }
     }
 
-    public function sendNotification($chatId, $studentName, $className, $subjectName, $status, $time)
+    public function sendNotification($chatId, $studentName, $className, $subjectName, $status, $time, $date)
     {
         if (!$this->botToken || !$chatId) {
             return;
         }
 
-        $message = $this->formatMessage($studentName, $className, $subjectName, $status, $time);
+        $message = $this->formatMessage($studentName, $className, $subjectName, $status, $time, $date);
 
         try {
             $response = Http::post("https://api.telegram.org/bot{$this->botToken}/sendMessage", [
@@ -58,7 +58,7 @@ class TelegramService
         }
     }
 
-    private function formatMessage($studentName, $className, $subjectName, $status, $time)
+    private function formatMessage($studentName, $className, $subjectName, $status, $time, $date)
     {
         $icon = 'ℹ️';
         $statusText = $status;
@@ -92,8 +92,9 @@ class TelegramService
                "Nama: *{$studentName}*\n" .
                "Kelas: {$className}\n" .
                "Mata Pelajaran: *{$subjectName}*\n" .
+               "Tanggal: {$date}\n" .
                "Status: *{$status}*\n" .
-               "Waktu: {$time}\n\n" .
+               "Jam Pelajaran: {$time}\n\n" .
                "_{$note}_";
     }
 }

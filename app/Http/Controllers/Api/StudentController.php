@@ -33,22 +33,35 @@ class StudentController extends Controller
             $query->where('nis', $request->nis);
         }
 
-        $students = $query->get();
+        // Add pagination support
+        $perPage = $request->input('per_page', 10);
+        
+        if ($request->has('per_page') && $request->per_page == 'all') {
+            // Return all students without pagination for dropdowns
+            $students = $query->get();
+            return response()->json([
+                'data' => $students,
+            ], 200);
+        }
+        
+        $students = $query->orderBy('name')->paginate($perPage);
         
         Log::info('Students fetched', [
             'count' => $students->count(),
-            'class_group_id_filter' => $request->class_group_id ?? 'none',
-            'students' => $students->map(function($s) {
-                return [
-                    'id' => $s->id,
-                    'name' => $s->name,
-                    'class_group_id' => $s->class_group_id
-                ];
-            })
+            'total' => $students->total(),
+            'class_group_id_filter' => $request->class_group_id ?? 'none'
         ]);
 
         return response()->json([
-            'data' => $students,
+            'data' => $students->items(),
+            'meta' => [
+                'current_page' => $students->currentPage(),
+                'last_page' => $students->lastPage(),
+                'per_page' => $students->perPage(),
+                'total' => $students->total(),
+                'from' => $students->firstItem(),
+                'to' => $students->lastItem(),
+            ],
         ], 200);
     }
 

@@ -11,10 +11,26 @@ class SubjectController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
+        $perPage = $request->input('per_page', 10);
+        
+        if ($request->has('per_page') && $request->per_page == 'all') {
+            return response()->json(['data' => Subject::all()], 200);
+        }
+        
+        $subjects = Subject::orderBy('name')->paginate($perPage);
+        
         return response()->json([
-            'data' => Subject::all(),
+            'data' => $subjects->items(),
+            'meta' => [
+                'current_page' => $subjects->currentPage(),
+                'last_page' => $subjects->lastPage(),
+                'per_page' => $subjects->perPage(),
+                'total' => $subjects->total(),
+                'from' => $subjects->firstItem(),
+                'to' => $subjects->lastItem(),
+            ],
         ], 200);
     }
 

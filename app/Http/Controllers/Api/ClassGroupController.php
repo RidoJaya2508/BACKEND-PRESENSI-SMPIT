@@ -12,17 +12,36 @@ class ClassGroupController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $classGroups = ClassGroup::with('homeroomTeacher')->get();
-
-        $classGroups->map(function ($classGroup) {
+        $perPage = $request->input('per_page', 10);
+        
+        if ($request->has('per_page') && $request->per_page == 'all') {
+            $classGroups = ClassGroup::with('homeroomTeacher')->get();
+            $classGroups->map(function ($classGroup) {
+                $classGroup->homeroom_teacher_name = $classGroup->homeroomTeacher ? $classGroup->homeroomTeacher->name : null;
+                return $classGroup;
+            });
+            return response()->json(['data' => $classGroups], 200);
+        }
+        
+        $classGroups = ClassGroup::with('homeroomTeacher')->orderBy('level')->orderBy('name')->paginate($perPage);
+        
+        $data = $classGroups->map(function ($classGroup) {
             $classGroup->homeroom_teacher_name = $classGroup->homeroomTeacher ? $classGroup->homeroomTeacher->name : null;
             return $classGroup;
         });
 
         return response()->json([
-            'data' => $classGroups,
+            'data' => $data,
+            'meta' => [
+                'current_page' => $classGroups->currentPage(),
+                'last_page' => $classGroups->lastPage(),
+                'per_page' => $classGroups->perPage(),
+                'total' => $classGroups->total(),
+                'from' => $classGroups->firstItem(),
+                'to' => $classGroups->lastItem(),
+            ],
         ], 200);
     }
 

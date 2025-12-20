@@ -11,9 +11,27 @@ use Illuminate\Validation\Rule;
 
 class UserController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        return response()->json(['data' => User::all()]);
+        $perPage = $request->input('per_page', 10);
+        
+        if ($request->has('per_page') && $request->per_page == 'all') {
+            return response()->json(['data' => User::all()]);
+        }
+        
+        $users = User::orderBy('name')->paginate($perPage);
+        
+        return response()->json([
+            'data' => $users->items(),
+            'meta' => [
+                'current_page' => $users->currentPage(),
+                'last_page' => $users->lastPage(),
+                'per_page' => $users->perPage(),
+                'total' => $users->total(),
+                'from' => $users->firstItem(),
+                'to' => $users->lastItem(),
+            ],
+        ]);
     }
 
     public function store(Request $request)

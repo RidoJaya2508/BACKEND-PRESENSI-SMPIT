@@ -21,7 +21,7 @@ jobs:
           username: ${{ secrets.BE_FTP_USERNAME }}
           password: ${{ secrets.BE_FTP_PASSWORD }}
           local-dir: ./
-          server-dir: /public_html/
+          server-dir: /
           exclude: |
             **/.git*
             **/.git*/**
@@ -43,7 +43,7 @@ jobs:
           username: ${{ secrets.BE_SSH_USERNAME }}
           password: ${{ secrets.BE_SSH_PASSWORD }}
           script: |
-            cd public_html
+            cd ~/public_html/api-sihadirsmp.manawa.sch.id
             composer install --no-dev --optimize-autoloader
             php artisan config:cache
             php artisan route:cache

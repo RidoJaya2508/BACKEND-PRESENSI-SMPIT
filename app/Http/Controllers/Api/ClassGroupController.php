@@ -82,11 +82,24 @@ class ClassGroupController extends Controller
     {
         $classGroup = ClassGroup::findOrFail($id);
 
-        $validated = $request->validate([
+        $rules = [
             'name' => 'required|string|max:255',
             'level' => 'nullable|string|max:10',
-            'homeroom_teacher_id' => 'nullable|integer|unique:class_groups,homeroom_teacher_id,' . $id,
-        ]);
+        ];
+
+        // Only validate homeroom_teacher_id if it's provided and not null
+        if ($request->filled('homeroom_teacher_id')) {
+            $rules['homeroom_teacher_id'] = [
+                'integer',
+                'exists:users,id',
+                \Illuminate\Validation\Rule::unique('class_groups')->ignore($id)
+            ];
+        } elseif ($request->has('homeroom_teacher_id')) {
+            // Allow setting to null
+            $classGroup->homeroom_teacher_id = null;
+        }
+
+        $validated = $request->validate($rules);
 
         $classGroup->update($validated);
 

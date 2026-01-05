@@ -1,5 +1,103 @@
 <p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
 
+# Backend Presensi SMPIT
+
+Backend API untuk sistem presensi SMPIT dengan integrasi Telegram Bot.
+
+## 🚀 Quick Start
+
+### Menjalankan Server + Bot Sekaligus
+
+**Cara Termudah (Double-click):**
+```
+START.bat
+```
+
+**Atau via Command Line:**
+```batch
+scripts\start.bat
+```
+
+Perintah di atas akan otomatis menjalankan:
+- ✅ Laravel Backend Server (http://127.0.0.1:8000)
+- ✅ Telegram Bot Polling
+
+### Manual (Jika ingin terpisah)
+
+**Terminal 1 - Backend:**
+```bash
+php artisan serve
+```
+
+**Terminal 2 - Bot:**
+```bash
+php artisan telegram:poll
+```
+
+## 🧪 Testing Bot
+
+```batch
+scripts\test-bot.bat
+```
+
+Test otomatis untuk:
+- `/start` command
+- `/menu` command
+- Regular messages
+- `/help` command
+
+## 📋 Requirements
+
+- PHP >= 8.1
+- Composer
+- MySQL/MariaDB
+- Telegram Bot Token
+
+## 🛠️ Installation
+
+1. Clone repository
+2. Install dependencies:
+   ```bash
+   composer install
+   ```
+3. Copy `.env.example` ke `.env` dan konfigurasi:
+   ```
+   TELEGRAM_BOT_TOKEN=your_bot_token
+   TELEGRAM_BOT_USERNAME=your_bot_username
+   ```
+4. Generate key:
+   ```bash
+   php artisan key:generate
+   ```
+5. Migrate database:
+   ```bash
+   php artisan migrate
+   ```
+
+## 🤖 Telegram Bot Features
+
+- ✅ Inline Keyboard Menu
+- ✅ Context-aware responses
+- ✅ Registration via NIS
+- ✅ QR Code connection
+- ✅ Attendance notifications
+
+### Bot Commands:
+- `/start` - Welcome message + menu
+- `/menu` - Navigation menu
+- `/help` - Bantuan lengkap
+- `/daftar NIS` - Registrasi dengan NIS
+
+## 📖 Documentation
+
+- [Scripts README](scripts/README.md) - Panduan semua script
+- [Bot Running Guide](../BOT-RUNNING-GUIDE.md)
+- [Bot Start Guide](../BOT-START-GUIDE.md)
+- [Telegram Professional Menu](../TELEGRAM-PROFESSIONAL-MENU.md)
+- [Production Deployment](../PRODUCTION-DEPLOYMENT.md)
+
+---
+
 <p align="center">
 <a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
 <a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>

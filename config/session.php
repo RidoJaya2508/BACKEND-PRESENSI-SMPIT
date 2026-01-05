@@ -18,7 +18,7 @@ return [
     |
     */
 
-    'driver' => env('SESSION_DRIVER', 'database'), // Use database driver for better reliability
+    'driver' => env('SESSION_DRIVER', 'file'), // Use file driver for development
 
     /*
     |--------------------------------------------------------------------------

@@ -14,25 +14,70 @@ class TelegramService
         $this->botToken = env('TELEGRAM_BOT_TOKEN');
     }
 
-    public function sendMessage($chatId, $text)
+    public function sendMessage($chatId, $text, $parseMode = 'Markdown', $replyMarkup = null)
     {
         if (!$this->botToken || !$chatId) {
-            return;
+            Log::warning('Telegram sendMessage skipped: Missing bot token or chat ID', [
+                'has_token' => !empty($this->botToken),
+                'chat_id' => $chatId
+            ]);
+            return false;
         }
 
         try {
-            $response = Http::post("https://api.telegram.org/bot{$this->botToken}/sendMessage", [
+            Log::info('Sending Telegram message', [
                 'chat_id' => $chatId,
-                'text' => $text,
-                'parse_mode' => 'Markdown',
+                'text_preview' => substr($text, 0, 50) . '...',
+                'has_markup' => !empty($replyMarkup)
             ]);
 
-            if (!$response->successful()) {
-                Log::error('Telegram API Error: ' . $response->body());
+            $payload = [
+                'chat_id' => $chatId,
+                'text' => $text,
+                'parse_mode' => $parseMode,
+            ];
+
+            if ($replyMarkup) {
+                $payload['reply_markup'] = json_encode($replyMarkup);
             }
+
+            $response = Http::post("https://api.telegram.org/bot{$this->botToken}/sendMessage", $payload);
+
+            if (!$response->successful()) {
+                Log::error('Telegram API Error', [
+                    'status' => $response->status(),
+                    'body' => $response->body()
+                ]);
+                return false;
+            }
+
+            Log::info('Telegram message sent successfully', [
+                'chat_id' => $chatId
+            ]);
+            return true;
         } catch (\Exception $e) {
-            Log::error('Failed to send Telegram message: ' . $e->getMessage());
+            Log::error('Failed to send Telegram message', [
+                'error' => $e->getMessage(),
+                'chat_id' => $chatId
+            ]);
+            return false;
         }
+    }
+
+    public function createInlineKeyboard($buttons)
+    {
+        return [
+            'inline_keyboard' => $buttons
+        ];
+    }
+
+    public function createReplyKeyboard($buttons, $resize = true, $oneTime = false)
+    {
+        return [
+            'keyboard' => $buttons,
+            'resize_keyboard' => $resize,
+            'one_time_keyboard' => $oneTime
+        ];
     }
 
     public function sendNotification($chatId, $studentName, $className, $subjectName, $status, $time, $date)

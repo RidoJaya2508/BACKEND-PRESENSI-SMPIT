@@ -179,12 +179,21 @@ class StudentController extends Controller
         $temp = TelegramTemp::where('token', $request->token)->first();
 
         if ($temp) {
+            Log::info('Telegram Status Check - Found', [
+                'token' => $request->token,
+                'chat_id' => $temp->chat_id
+            ]);
+            
             return response()->json([
                 'connected' => true,
                 'chat_id' => $temp->chat_id,
                 'username' => $temp->username,
             ]);
         }
+
+        Log::info('Telegram Status Check - Not Found', [
+            'token' => $request->token
+        ]);
 
         return response()->json([
             'connected' => false,

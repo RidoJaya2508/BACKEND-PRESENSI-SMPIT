@@ -39,6 +39,7 @@ jobs:
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.BE_FTP_SERVER }}
+          port: ${{ secrets.BE_SSH_PORT }}
           username: ${{ secrets.BE_SSH_USERNAME }}
           password: ${{ secrets.BE_SSH_PASSWORD }}
           script: |

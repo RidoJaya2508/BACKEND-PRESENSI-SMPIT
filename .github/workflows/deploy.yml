@@ -35,17 +35,18 @@ jobs:
             **/*.bat
             **/tests/**
       
-      - name: Post-deployment commands
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.BE_FTP_SERVER }}
-          port: ${{ secrets.BE_SSH_PORT }}
-          username: ${{ secrets.BE_SSH_USERNAME }}
-          password: ${{ secrets.BE_SSH_PASSWORD }}
-          script: |
-            cd ~/public_html/api-sihadirsmp.manawa.sch.id
-            composer install --no-dev --optimize-autoloader
-            php artisan config:cache
-            php artisan route:cache
-            php artisan view:cache
-            php artisan migrate --force
+      # SSH deployment commands disabled - run manually via cPanel Terminal
+      # - name: Post-deployment commands
+      #   uses: appleboy/ssh-action@master
+      #   with:
+      #     host: ${{ secrets.BE_FTP_SERVER }}
+      #     port: ${{ secrets.BE_SSH_PORT }}
+      #     username: ${{ secrets.BE_SSH_USERNAME }}
+      #     password: ${{ secrets.BE_SSH_PASSWORD }}
+      #     script: |
+      #       cd ~/public_html/api-sihadirsmp.manawa.sch.id
+      #       composer install --no-dev --optimize-autoloader
+      #       php artisan config:cache
+      #       php artisan route:cache
+      #       php artisan view:cache
+      #       php artisan migrate --force

@@ -17,9 +17,9 @@ jobs:
       - name: Deploy to cPanel via FTP
         uses: SamKirkland/FTP-Deploy-Action@4.3.3
         with:
-          server: ${{ secrets.FTP_SERVER }}
-          username: ${{ secrets.FTP_USERNAME }}
-          password: ${{ secrets.FTP_PASSWORD }}
+          server: ${{ secrets.BE_FTP_SERVER }}
+          username: ${{ secrets.BE_FTP_USERNAME }}
+          password: ${{ secrets.BE_FTP_PASSWORD }}
           local-dir: ./
           server-dir: /public_html/
           exclude: |
@@ -38,9 +38,9 @@ jobs:
       - name: Post-deployment commands
         uses: appleboy/ssh-action@master
         with:
-          host: ${{ secrets.FTP_SERVER }}
-          username: ${{ secrets.SSH_USERNAME }}
-          password: ${{ secrets.SSH_PASSWORD }}
+          host: ${{ secrets.BE_FTP_SERVER }}
+          username: ${{ secrets.BE_SSH_USERNAME }}
+          password: ${{ secrets.BE_SSH_PASSWORD }}
           script: |
             cd public_html
             composer install --no-dev --optimize-autoloader

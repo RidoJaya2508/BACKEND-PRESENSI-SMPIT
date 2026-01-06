@@ -34,7 +34,8 @@ class SetTelegramWebhook extends Command
             return;
         }
 
-        $webhookUrl = $url . '/api/telegram/webhook';
+        // URL already includes full webhook path
+        $webhookUrl = $url;
         $this->info("Setting webhook to: $webhookUrl");
 
         $response = Http::get("https://api.telegram.org/bot{$token}/setWebhook?url={$webhookUrl}");

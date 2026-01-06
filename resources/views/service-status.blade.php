@@ -297,11 +297,11 @@
         <div class="info-grid">
             <div class="info-card">
                 <div class="info-label">Server Address</div>
-                <div class="info-value">http://localhost:8000</div>
+                <div class="info-value">{{ config('app.url') }}</div>
             </div>
             <div class="info-card">
                 <div class="info-label">Database</div>
-                <div class="info-value">MySQL - presensi_smpit</div>
+                <div class="info-value">MySQL - Connected</div>
             </div>
             <div class="info-card">
                 <div class="info-label">Environment</div>
@@ -338,14 +338,14 @@
         </div>
 
         <div class="buttons">
-            <a href="/api/students" class="btn btn-primary">📊 View Students API</a>
-            <a href="http://localhost:3000" class="btn btn-secondary">🌐 Frontend</a>
+            <a href="/api/health" class="btn btn-primary">💚 Health Check</a>
+            <a href="https://sihadir-smp.manawa.sch.id" class="btn btn-secondary">🌐 Frontend</a>
         </div>
 
         <div class="documentation">
             <p>🚀 <strong>Server is running and ready for API requests</strong></p>
             <p>For comprehensive API documentation and integration guides, please refer to the backend setup documentation.</p>
-            <p>The frontend application is configured to connect to this server at <code>http://localhost:8000/api</code></p>
+            <p>The frontend application is configured to connect to this server at <code>{{ config('app.url') }}/api</code></p>
         </div>
     </div>
 </body>

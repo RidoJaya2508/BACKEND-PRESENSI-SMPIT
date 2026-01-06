@@ -25,7 +25,9 @@ return [
         'http://localhost:3000',
         'http://127.0.0.1:3000',
         'http://sihadir-smp.manawa.sch.id',
+        'https://sihadir-smp.manawa.sch.id',
         'http://api-sihadirsmp.manawa.sch.id',
+        'https://api-sihadirsmp.manawa.sch.id',
     ],
 
     'allowed_origins_patterns' => [],

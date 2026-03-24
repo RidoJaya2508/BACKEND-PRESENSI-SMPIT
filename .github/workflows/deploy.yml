@@ -8,7 +8,7 @@ on:
 
 jobs:
   deploy:
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     
     steps:
       - name: Checkout code
@@ -26,10 +26,11 @@ jobs:
           server: ${{ secrets.BE_FTP_SERVER }}
           username: ${{ secrets.BE_FTP_USERNAME }}
           password: ${{ secrets.BE_FTP_PASSWORD }}
-          protocol: ftp
+          protocol: ftps
           port: 21
           timeout: 120000
           log-level: verbose
+          security: loose
           local-dir: ./
           server-dir: /
           exclude: |

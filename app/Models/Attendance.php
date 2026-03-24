@@ -18,6 +18,16 @@ class Attendance extends Model
         'recorded_at' => 'datetime',
     ];
 
+    public function getStatusAttribute($value)
+    {
+        return $value === 'Ijin' ? 'Izin' : $value;
+    }
+
+    public function setStatusAttribute($value): void
+    {
+        $this->attributes['status'] = $value === 'Ijin' ? 'Izin' : $value;
+    }
+
     /**
      * Get the schedule that the attendance belongs to.
      */

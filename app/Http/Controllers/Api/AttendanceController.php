@@ -69,9 +69,13 @@ class AttendanceController extends Controller
         $validated = $request->validate([
             'schedule_id' => 'required|integer',
             'student_id' => 'required|integer',
-            'status' => 'required|string|in:Hadir,Terlambat,Izin,Sakit,Alpa,Bolos',
+            'status' => 'required|string|in:Hadir,Terlambat,Izin,Ijin,Sakit,Alpa,Bolos',
             'recorded_at' => 'nullable|date_format:Y-m-d H:i:s',
         ]);
+
+        if (($validated['status'] ?? null) === 'Ijin') {
+            $validated['status'] = 'Izin';
+        }
 
         $attendance = Attendance::create($validated);
         $attendance->load(['student', 'schedule.classGroup', 'schedule.subject']);
@@ -122,9 +126,13 @@ class AttendanceController extends Controller
         $attendance = Attendance::findOrFail($id);
 
         $validated = $request->validate([
-            'status' => 'required|string|in:Hadir,Terlambat,Izin,Sakit,Alpa,Bolos',
+            'status' => 'required|string|in:Hadir,Terlambat,Izin,Ijin,Sakit,Alpa,Bolos',
             'recorded_at' => 'nullable|date_format:Y-m-d H:i:s',
         ]);
+
+        if (($validated['status'] ?? null) === 'Ijin') {
+            $validated['status'] = 'Izin';
+        }
 
         $attendance->update($validated);
         $attendance->load(['student', 'schedule.classGroup', 'schedule.subject']);

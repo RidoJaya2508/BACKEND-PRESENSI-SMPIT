@@ -13,9 +13,43 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
+
+      - name: Connectivity check to FTP ports
+        run: |
+          echo "Checking FTP host reachability from GitHub runner..."
+          timeout 10 bash -c "cat < /dev/null > /dev/tcp/${{ secrets.BE_FTP_SERVER }}/21" && echo "Port 21 reachable" || echo "Port 21 not reachable"
+          timeout 10 bash -c "cat < /dev/null > /dev/tcp/${{ secrets.BE_FTP_SERVER }}/990" && echo "Port 990 reachable" || echo "Port 990 not reachable"
       
-      - name: Deploy via FTPS Explicit (Port 21)
+      - name: Deploy via FTP (Port 21)
+        id: deploy_ftp
+        uses: SamKirkland/FTP-Deploy-Action@4.3.3
+        continue-on-error: true
+        with:
+          server: ${{ secrets.BE_FTP_SERVER }}
+          username: ${{ secrets.BE_FTP_USERNAME }}
+          password: ${{ secrets.BE_FTP_PASSWORD }}
+          protocol: ftp
+          port: 21
+          timeout: 120000
+          log-level: verbose
+          local-dir: ./
+          server-dir: /
+          exclude: |
+            **/.git*
+            **/.git*/**
+            **/node_modules/**
+            **/vendor/**
+            **/.env
+            **/storage/logs/**
+            **/storage/framework/cache/**
+            **/storage/framework/sessions/**
+            **/storage/framework/views/**
+            **/*.bat
+            **/tests/**
+
+      - name: Deploy via FTPS Explicit (Port 21 fallback)
         id: deploy_ftps_explicit
+        if: steps.deploy_ftp.outcome == 'failure'
         uses: SamKirkland/FTP-Deploy-Action@4.3.3
         continue-on-error: true
         with:
@@ -44,7 +78,7 @@ jobs:
 
       - name: Deploy via FTPS Implicit (Port 990 fallback)
         id: deploy_ftps_implicit
-        if: steps.deploy_ftps_explicit.outcome == 'failure'
+        if: steps.deploy_ftp.outcome == 'failure' && steps.deploy_ftps_explicit.outcome == 'failure'
         uses: SamKirkland/FTP-Deploy-Action@4.3.3
         continue-on-error: true
         with:
@@ -72,9 +106,9 @@ jobs:
             **/tests/**
 
       - name: Fail if all deploy attempts fail
-        if: steps.deploy_ftps_explicit.outcome == 'failure' && steps.deploy_ftps_implicit.outcome == 'failure'
+        if: steps.deploy_ftp.outcome == 'failure' && steps.deploy_ftps_explicit.outcome == 'failure' && steps.deploy_ftps_implicit.outcome == 'failure'
         run: |
-          echo "Both FTPS explicit (21) and FTPS implicit (990) failed."
+          echo "FTP (21), FTPS explicit (21), and FTPS implicit (990) all failed."
           echo "Likely causes: server blocks GitHub runner IPs, wrong host/port, or server only supports SFTP."
           exit 1
       

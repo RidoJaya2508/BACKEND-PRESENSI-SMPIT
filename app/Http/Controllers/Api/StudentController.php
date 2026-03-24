@@ -75,7 +75,7 @@ class StudentController extends Controller
             'nis' => 'required|string|unique:students',
             'parent_name' => 'nullable|string|max:255',
             'parent_telegram_id' => 'nullable|string|max:255',
-            'class_group_id' => 'nullable|integer|exists:class_groups,id',
+            'class_group_id' => 'required|integer|exists:class_groups,id',
         ]);
 
         // Check for temporary Telegram connection
@@ -116,7 +116,7 @@ class StudentController extends Controller
             'nis' => 'required|string|unique:students,nis,' . $id,
             'parent_name' => 'nullable|string|max:255',
             'parent_telegram_id' => 'nullable|string|max:255',
-            'class_group_id' => 'nullable|integer|exists:class_groups,id',
+            'class_group_id' => 'required|integer|exists:class_groups,id',
         ]);
 
         // Check for temporary Telegram connection

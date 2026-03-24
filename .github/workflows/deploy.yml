@@ -21,9 +21,7 @@ jobs:
           timeout 10 bash -c "cat < /dev/null > /dev/tcp/${{ secrets.BE_FTP_SERVER }}/990" && echo "Port 990 reachable" || echo "Port 990 not reachable"
       
       - name: Deploy via FTP (Port 21)
-        id: deploy_ftp
         uses: SamKirkland/FTP-Deploy-Action@4.3.3
-        continue-on-error: true
         with:
           server: ${{ secrets.BE_FTP_SERVER }}
           username: ${{ secrets.BE_FTP_USERNAME }}
@@ -46,71 +44,6 @@ jobs:
             **/storage/framework/views/**
             **/*.bat
             **/tests/**
-
-      - name: Deploy via FTPS Explicit (Port 21 fallback)
-        id: deploy_ftps_explicit
-        if: steps.deploy_ftp.outcome == 'failure'
-        uses: SamKirkland/FTP-Deploy-Action@4.3.3
-        continue-on-error: true
-        with:
-          server: ${{ secrets.BE_FTP_SERVER }}
-          username: ${{ secrets.BE_FTP_USERNAME }}
-          password: ${{ secrets.BE_FTP_PASSWORD }}
-          protocol: ftps
-          port: 21
-          timeout: 120000
-          log-level: verbose
-          security: loose
-          local-dir: ./
-          server-dir: /
-          exclude: |
-            **/.git*
-            **/.git*/**
-            **/node_modules/**
-            **/vendor/**
-            **/.env
-            **/storage/logs/**
-            **/storage/framework/cache/**
-            **/storage/framework/sessions/**
-            **/storage/framework/views/**
-            **/*.bat
-            **/tests/**
-
-      - name: Deploy via FTPS Implicit (Port 990 fallback)
-        id: deploy_ftps_implicit
-        if: steps.deploy_ftp.outcome == 'failure' && steps.deploy_ftps_explicit.outcome == 'failure'
-        uses: SamKirkland/FTP-Deploy-Action@4.3.3
-        continue-on-error: true
-        with:
-          server: ${{ secrets.BE_FTP_SERVER }}
-          username: ${{ secrets.BE_FTP_USERNAME }}
-          password: ${{ secrets.BE_FTP_PASSWORD }}
-          protocol: ftps-legacy
-          port: 990
-          timeout: 120000
-          log-level: verbose
-          security: loose
-          local-dir: ./
-          server-dir: /
-          exclude: |
-            **/.git*
-            **/.git*/**
-            **/node_modules/**
-            **/vendor/**
-            **/.env
-            **/storage/logs/**
-            **/storage/framework/cache/**
-            **/storage/framework/sessions/**
-            **/storage/framework/views/**
-            **/*.bat
-            **/tests/**
-
-      - name: Fail if all deploy attempts fail
-        if: steps.deploy_ftp.outcome == 'failure' && steps.deploy_ftps_explicit.outcome == 'failure' && steps.deploy_ftps_implicit.outcome == 'failure'
-        run: |
-          echo "FTP (21), FTPS explicit (21), and FTPS implicit (990) all failed."
-          echo "Likely causes: server blocks GitHub runner IPs, wrong host/port, or server only supports SFTP."
-          exit 1
       
       # SSH deployment commands disabled - run manually via cPanel Terminal
       # - name: Post-deployment commands

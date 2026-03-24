@@ -20,6 +20,11 @@ jobs:
           server: ${{ secrets.BE_FTP_SERVER }}
           username: ${{ secrets.BE_FTP_USERNAME }}
           password: ${{ secrets.BE_FTP_PASSWORD }}
+          protocol: ftps
+          port: 21
+          timeout: 120000
+          log-level: verbose
+          security: loose
           local-dir: ./
           server-dir: /
           exclude: |

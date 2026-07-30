@@ -22,7 +22,10 @@ return new class extends Migration
         $driver = DB::getDriverName();
 
         if ($driver === 'mysql') {
+            // Drop FK (allows SET NULL), alter to NOT NULL, re-add FK with RESTRICT
+            DB::statement('ALTER TABLE students DROP FOREIGN KEY students_class_group_id_foreign');
             DB::statement('ALTER TABLE students MODIFY class_group_id BIGINT UNSIGNED NOT NULL');
+            DB::statement('ALTER TABLE students ADD CONSTRAINT students_class_group_id_foreign FOREIGN KEY (class_group_id) REFERENCES class_groups(id) ON DELETE RESTRICT');
             return;
         }
 

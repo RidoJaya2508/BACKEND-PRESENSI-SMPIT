@@ -86,11 +86,11 @@ class DatabaseSeeder extends Seeder
 
         // Create Default Students
         $students = [
-            ['name' => 'Ahmad Dani', 'nis' => '2024001', 'parent_name' => 'Dani Sr.', 'parent_telegram_id' => '123456789'],
-            ['name' => 'Siti Aminah', 'nis' => '2024002', 'parent_name' => 'Amin', 'parent_telegram_id' => '987654321'],
-            ['name' => 'Rudi Hartono', 'nis' => '2024003', 'parent_name' => 'Hartono', 'parent_telegram_id' => '112233445'],
-            ['name' => 'Dewi Persik', 'nis' => '2024004', 'parent_name' => 'Persik', 'parent_telegram_id' => '445566778'],
-            ['name' => 'Bambang Pamungkas', 'nis' => '2024005', 'parent_name' => 'Pamungkas', 'parent_telegram_id' => '778899001'],
+            ['name' => 'Ahmad Dani', 'nis' => '2024001', 'parent_name' => 'Dani Sr.', 'parent_telegram_id' => '123456789', 'class_group_id' => $class1->id],
+            ['name' => 'Siti Aminah', 'nis' => '2024002', 'parent_name' => 'Amin', 'parent_telegram_id' => '987654321', 'class_group_id' => $class1->id],
+            ['name' => 'Rudi Hartono', 'nis' => '2024003', 'parent_name' => 'Hartono', 'parent_telegram_id' => '112233445', 'class_group_id' => $class2->id],
+            ['name' => 'Dewi Persik', 'nis' => '2024004', 'parent_name' => 'Persik', 'parent_telegram_id' => '445566778', 'class_group_id' => $class2->id],
+            ['name' => 'Bambang Pamungkas', 'nis' => '2024005', 'parent_name' => 'Pamungkas', 'parent_telegram_id' => '778899001', 'class_group_id' => $class3->id],
         ];
 
         foreach ($students as $student) {

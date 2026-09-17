@@ -12,7 +12,7 @@ class SetTelegramWebhook extends Command
      *
      * @var string
      */
-    protected $signature = 'telegram:set-webhook {url}';
+    protected $signature = 'telegram:set-webhook {url?}';
 
     /**
      * The console command description.
@@ -26,8 +26,13 @@ class SetTelegramWebhook extends Command
      */
     public function handle()
     {
-        $url = $this->argument('url');
+        $url = $this->argument('url') ?? env('TELEGRAM_WEBHOOK_URL');
         $token = env('TELEGRAM_BOT_TOKEN');
+
+        if (!$url) {
+            $this->error('Webhook URL is required or set TELEGRAM_WEBHOOK_URL in .env');
+            return;
+        }
 
         if (!$token) {
             $this->error('TELEGRAM_BOT_TOKEN is not set in .env');

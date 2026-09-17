@@ -23,7 +23,7 @@ FRONTEND_URL=https://sihadir-smp.manawa.sch.id
 SANCTUM_STATEFUL_DOMAINS=sihadir-smp.manawa.sch.id
 
 # Telegram Bot Configuration
-TELEGRAM_BOT_TOKEN=8569505953:AAE-g3a7Dzqsc2gySrmIvRz5AZCMNfeQpKE
+TELEGRAM_BOT_TOKEN=your_telegram_bot_token
 TELEGRAM_WEBHOOK_URL=https://api-sihadirsmp.manawa.sch.id/api/telegram/webhook
 
 # Session Configuration
@@ -57,7 +57,7 @@ curl https://api-sihadirsmp.manawa.sch.id/api/telegram/webhook
 
 Atau cek via Telegram API:
 ```
-https://api.telegram.org/bot8569505953:AAE-g3a7Dzqsc2gySrmIvRz5AZCMNfeQpKE/getWebhookInfo
+https://api.telegram.org/bot<YOUR_TELEGRAM_BOT_TOKEN>/getWebhookInfo
 ```
 
 ## Checklist ✅

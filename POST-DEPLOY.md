@@ -133,7 +133,7 @@ SESSION_DOMAIN=api-sihadirsmp.manawa.sch.id
 SANCTUM_STATEFUL_DOMAINS=sihadir-smp.manawa.sch.id
 
 # Telegram
-TELEGRAM_BOT_TOKEN=8569505953:AAE-g3a7Dzqsc2gySrmIvRz5AZCMNfeQpKE
+TELEGRAM_BOT_TOKEN=your_telegram_bot_token
 TELEGRAM_BOT_USERNAME=Sihadirsmpbot
 TELEGRAM_WEBHOOK_URL=http://api-sihadirsmp.manawa.sch.id/api/telegram/webhook
 ```
